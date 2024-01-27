@@ -1,0 +1,149 @@
+unit uClientesModel;
+
+interface
+
+uses
+   System.Generics.Collections, System.JSON, REST.JSON, Datasnap.DBClient,
+   uTools, System.SysUtils, uConst, uSystem.JSONUtil;
+
+type
+   TClientesModel = class
+   private
+      FId: Integer;
+      FDataCadastro: string;
+      FTpDocto: string;
+      FDocto: string;
+      FNome: string;
+      FTelefone: string;
+      procedure SetId(const Value: Integer);
+      procedure SetDataCadastro(const Value: string);
+      procedure setNome(const Value: string);
+
+   public
+      function Insert(AJSON: TJSONObject): TJSONValue;
+      function Update(AId: string; AJSON: TJSONObject): TJSONValue;
+      function Delete(AId: string): TJSONValue;
+      function GetId(AAutoIncrementar: Integer): Integer;
+      function Get(id, search, numPagina: string): TJSONArray;
+      property Id: Integer read FId write SetID;
+      property DataCadastro: string read FDataCadastro write SetDataCadastro;
+      property Nome: string read FNome write setNome;
+      property TpDocto: string read FTpDocto write FTpDocto;
+      property Docto: string read FDocto write FDocto;
+      property Telefone: string read FTelefone write FTelefone;
+   end;
+
+implementation
+
+uses
+   uClientesDao, JOSE.Types.JSON;
+{ TClientesModel }
+
+function TClientesModel.Update(AId: string; AJSON: TJSONObject): TJSONValue;
+var
+   VClientesDao: TClientesDao;
+   VClientes: TClientesModel;
+begin
+   if AJSON.ToJSON <> 'null' then
+   begin
+      VClientes := TJson.JsonToObject<TClientesModel>(AJSON);
+      try
+         VClientesDao := TClientesDao.Create;
+         try
+            Result := VClientesDao.Update(AId, VClientes);
+         finally
+            VClientesDao.Free
+         end;
+      finally
+         VClientes.Free;
+      end;
+   end
+   else
+   begin
+      result := creatDefaultResult(1, ERROR, needBodyMessage)
+   end;
+end;
+
+function TClientesModel.Delete(AId: string): TJSONValue;
+var
+   VClientesDao: TClientesDao;
+begin
+   VClientesDao := TClientesDao.Create;
+   try
+      Result := VClientesDao.Delete(AId);
+   finally
+      VClientesDao.Free
+   end;
+end;
+
+function TClientesModel.GetId(AAutoIncrementar: Integer): Integer;
+var
+   VClientesDao: TClientesDao;
+begin
+   VClientesDao := TClientesDao.Create;
+   try
+      Result := VClientesDao.GetId(AAutoIncrementar);
+   finally
+      VClientesDao.Free
+   end;
+end;
+
+function TClientesModel.Insert(AJSON: TJSONObject): TJSONValue;
+var
+   VClientesDao: TClientesDao;
+   VClientes: TClientesModel;
+begin
+   if AJSON.ToJSON <> 'null' then
+   begin
+      VClientes := TJson.JsonToObject<TClientesModel>(AJSON);
+      VClientesDao := TClientesDao.Create;
+      try
+         Result := VClientesDao.Insert(VClientes);
+      finally
+         VClientesDao.Free;
+         VClientes.Free;
+      end;
+   end
+   else
+   begin
+      result := creatDefaultResult(1, ERROR, needBodyMessage)
+   end;
+end;
+
+function TClientesModel.Get(id, search, numPagina: string): TJSONArray;
+var
+   VClientesDao: TClientesDao;
+   VLista: TObjectList<TClientesModel>;
+begin
+   VClientesDao := TClientesDao.Create;
+   try
+      VLista := VClientesDao.Get(id, search, numPagina);
+      try
+         Result := TJSONUtil.ObjetoListaParaJson<TClientesModel>(VLista);
+      finally
+         if Assigned(VLista) then
+            VLista.Free;
+      end;
+   finally
+      if Assigned(VClientesDao) then
+         VClientesDao.Free;
+   end;
+end;
+
+procedure TClientesModel.SetDataCadastro(const Value: string);
+begin
+   FDataCadastro := Value;
+end;
+
+procedure TClientesModel.SetID(const Value: Integer);
+begin
+   FID := Value;
+end;
+
+procedure TClientesModel.setNome(const Value: string);
+begin
+   FNome := Value;
+end;
+
+end.
+

@@ -1,0 +1,411 @@
+unit uClientesController;
+
+interface
+
+uses
+   Winapi.Windows, Horse, System.JSON, System.SysUtils, uClientesModel,
+   FireDAC.Comp.Client, Data.DB, DataSet.Serialize, JOSE.Core.JWT,
+   JOSE.Core.Builder, REST.JSON, JOSE.Core.JWK, uTools, uAuth;
+
+procedure Registry;
+
+implementation
+
+uses
+   System.Generics.Collections, System.Classes, uConnection;
+
+const
+   author = 'IGORJACOPIDUTRA';
+
+procedure Get(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+var
+   au: TClientesModel;
+   qry: TFDQuery;
+   error, messages: string;
+   bType: string;
+   sParams: string;
+   LKey: TJWK;
+   LToken: TJWT;
+   search, id, numPag: string;
+   result: TJSONArray;
+begin
+   try
+      Log('Pesquisa realizada search: ' + search, true, true, false);
+      Writeln('****************** INICIANDO (START) REQUISIÇÃO (FIND/GET) ******************');
+      LKey := TJWK.Create(author);
+      try
+         au := TClientesModel.Create();
+         try
+            Writeln(DateTimeToStr(Now) + '[WAIT] Validando o TOKEN!');
+
+            if Req.Headers['Authorization'] <> '' then
+            begin
+               try
+                  Req.Headers['Authorization'];
+                  LToken := TJOSE.Verify(LKey, StringReplace(Req.Headers['Authorization'], 'Bearer ', '', [rfReplaceAll, rfIgnoreCase]));
+               except
+                  on E: Exception do
+                  begin
+                     Writeln(DateTimeToStr(Now) + '[UNAUTHORIZED] O Token informado na Requisição não está liberado');
+                     Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', 'O Token informado na Requisição não está liberado')).Status(401);
+                  end;
+               end;
+
+               try
+                  Writeln(DateTimeToStr(Now) + '[WAIT] Token informado: ' + StringReplace(Req.Headers['Authorization'], 'Bearer ', '', [rfReplaceAll, rfIgnoreCase]));
+                  if Assigned(LToken) then
+                  begin
+                     if LToken.Verified then
+                     begin
+                        Writeln(DateTimeToStr(Now) + '[SUCESS] O Token informado na Requisição está liberado!');
+
+                        if Req.Query.ContainsKey('search') then
+                           search := Req.Query['search'];
+
+                        if Req.Query.ContainsKey('id') then
+                           id := Req.Query['id'];
+
+                        if Req.Query.ContainsKey('numPag') then
+                           numPag := Req.Query['numPag'];
+
+                        if ((search <> '') or (id <> '')) then
+                        begin
+                           try
+                              Writeln(DateTimeToStr(Now) + '[SUCESS] Buscando');
+                              result := au.Get(id, search, numPag);
+
+                              if error = '' then
+                                 Res.Send<TJSONObject>(TJSONObject(result)).Status(200)
+                              else
+                                 Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', messages)).Status(200)
+                           except
+                              on E: Exception do
+                              begin
+                                 Writeln(DateTimeToStr(Now) + '[ERROR] Retornando Dados com Status 401');
+                                 Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', e.message)).Status(401);
+                              end;
+                           end;
+                        end
+                        else
+                        begin
+                           Writeln(DateTimeToStr(Now) + '[ERROR] Favor, informar pelo menos um parâmetro (search,id)!');
+                           Writeln(DateTimeToStr(Now) + '[ERROR] Retornando Dados com Status 401');
+                           Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', 'Favor, informar pelo menos um parâmetro (search,id)')).Status(401);
+                        end;
+
+                     end
+                     else
+                     begin
+                        Writeln(DateTimeToStr(Now) + '[UNAUTHORIZED] O Token informado na Requisição não está liberado');
+                        Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', 'O Token informado na Requisição não está liberado')).Status(401);
+                     end;
+                  end;
+               finally
+                  LToken.Free;
+               end;
+            end
+            else
+            begin
+               Writeln(DateTimeToStr(Now) + '[UNAUTHORIZED] O Token informado na Requisição não está liberado');
+               Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', 'O Token informado na Requisição não está liberado')).Status(401);
+            end;
+         finally
+            au.Free;
+         end;
+      finally
+         LKey.Free;
+      end;
+      Writeln(DateTimeToStr(Now) + '****************** FINALIZAÇÃO (END) REQUISIÇÃO (FIND/GET) ******************');
+   except
+      on E: Exception do
+      begin
+         Log('Erro : ' + e.Message, true, true, false);
+         Writeln(DateTimeToStr(Now) + 'Erro: ' + e.Message);
+         Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', e.message)).Status(401);
+      end;
+   end;
+
+   TrimAppMemorySize();
+end;
+
+procedure Post(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+var
+   au: TClientesModel;
+   LKey: TJWK;
+   LToken: TJWT;
+   jsonBody: TJSONObject;
+begin
+   try
+      Writeln('****************** INICIANDO (START) REQUISIÇÃO (INSERT/POST) ******************');
+
+      LKey := TJWK.Create(author);
+      try
+         au := TClientesModel.Create();
+         try
+            Writeln(DateTimeToStr(Now) + '[WAIT] Validando o TOKEN!');
+
+            if Req.Headers['Authorization'] <> '' then
+            begin
+               try
+                  Req.Headers['Authorization'];
+                  LToken := TJOSE.Verify(LKey, StringReplace(Req.Headers['Authorization'], 'Bearer ', '', [rfReplaceAll, rfIgnoreCase]));
+               except
+                  on E: Exception do
+                  begin
+                     Writeln(DateTimeToStr(Now) + '[UNAUTHORIZED] O Token informado na Requisição não está liberado');
+                     Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', 'O Token informado na Requisição não está liberado')).Status(401);
+                  end;
+               end;
+
+               try
+                  Writeln(DateTimeToStr(Now) + '[WAIT] Token informado: ' + StringReplace(Req.Headers['Authorization'], 'Bearer ', '', [rfReplaceAll, rfIgnoreCase]));
+                  if Assigned(LToken) then
+                  begin
+                     if LToken.Verified then
+                     begin
+                        Writeln(DateTimeToStr(Now) + '[SUCESS] O Token informado na Requisição está liberado!');
+
+                        Writeln(DateTimeToStr(Now) + '[SUCESS] Recebendo JSON de inserção');
+                        jsonBody := Req.Body<TJSONObject>;
+
+                        try
+                           Writeln(DateTimeToStr(Now) + '[SUCESS] Inserindo novo recurso');
+
+                           Res.Send<TJSONObject>(TJSONObject(au.Insert(jsonBody))).Status(201);
+                        except
+                           on E: Exception do
+                           begin
+                              Writeln(DateTimeToStr(Now) + '[ERROR] Retornando Dados com Status 500');
+                              Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', 'Erro ao inserir recurso: ' + e.message)).Status(500);
+                           end;
+                        end;
+                     end
+                     else
+                     begin
+                        Writeln(DateTimeToStr(Now) + '[UNAUTHORIZED] O Token informado na Requisição não está liberado');
+                        Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', 'O Token informado na Requisição não está liberado')).Status(401);
+                     end;
+                  end;
+               finally
+                  LToken.Free;
+               end;
+            end
+            else
+            begin
+               Writeln(DateTimeToStr(Now) + '[UNAUTHORIZED] O Token informado na Requisição não está liberado');
+               Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', 'O Token informado na Requisição não está liberado')).Status(401);
+            end;
+         finally
+            au.Free;
+         end;
+      finally
+         LKey.Free;
+      end;
+      Writeln(DateTimeToStr(Now) + '****************** FINALIZAÇÃO (END) REQUISIÇÃO (INSERT/POST) ******************');
+   except
+      on E: Exception do
+      begin
+         Log('Erro : ' + e.Message, true, true, false);
+         Writeln(DateTimeToStr(Now) + 'Erro: ' + e.Message);
+         Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', e.message)).Status(401);
+      end;
+   end;
+
+   TrimAppMemorySize();
+end;
+
+procedure Put(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+var
+   au: TClientesModel;
+   LKey: TJWK;
+   LToken: TJWT;
+   id: string;
+   jsonBody: TJSONObject;
+begin
+   try
+      Log('Atualização realizada para o ID: ' + id, true, true, false);
+      Writeln('****************** INICIANDO (START) REQUISIÇÃO (UPDATE/PUT) ******************');
+
+      LKey := TJWK.Create(author);
+      try
+         au := TClientesModel.Create();
+         try
+            Writeln(DateTimeToStr(Now) + '[WAIT] Validando o TOKEN!');
+
+            if Req.Headers['Authorization'] <> '' then
+            begin
+               try
+                  Req.Headers['Authorization'];
+                  LToken := TJOSE.Verify(LKey, StringReplace(Req.Headers['Authorization'], 'Bearer ', '', [rfReplaceAll, rfIgnoreCase]));
+               except
+                  on E: Exception do
+                  begin
+                     Writeln(DateTimeToStr(Now) + '[UNAUTHORIZED] O Token informado na Requisição não está liberado');
+                     Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', 'O Token informado na Requisição não está liberado')).Status(401);
+                  end;
+               end;
+
+               try
+                  Writeln(DateTimeToStr(Now) + '[WAIT] Token informado: ' + StringReplace(Req.Headers['Authorization'], 'Bearer ', '', [rfReplaceAll, rfIgnoreCase]));
+                  if Assigned(LToken) then
+                  begin
+                     if LToken.Verified then
+                     begin
+                        Writeln(DateTimeToStr(Now) + '[SUCESS] O Token informado na Requisição está liberado!');
+
+                // Obtenha o ID da URL
+                        id := Req.Params['id'];
+
+                        if id <> '' then
+                        begin
+                           try
+                              Writeln(DateTimeToStr(Now) + '[SUCESS] Atualizando recurso para o ID: ' + id);
+                              jsonBody := Req.Body<TJSONObject>;
+
+                    // Chamada ao método Update da sua classe TClientesModel
+                              au.Update(id, jsonBody);
+                              Res.Send<TJSONObject>(CreatDefaultResult(0, 'sucess', 'Recurso atualizado com sucesso')).Status(200);
+                           except
+                              on E: Exception do
+                              begin
+                                 Writeln(DateTimeToStr(Now) + '[ERROR] Retornando Dados com Status 500');
+                                 Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', 'Erro ao atualizar recurso: ' + e.message)).Status(500);
+                              end;
+                           end;
+                        end
+                        else
+                        begin
+                           Writeln(DateTimeToStr(Now) + '[ERROR] ID não fornecido na requisição!');
+                           Writeln(DateTimeToStr(Now) + '[ERROR] Retornando Dados com Status 400');
+                           Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', 'ID não fornecido na requisição')).Status(400);
+                        end;
+                     end
+                     else
+                     begin
+                        Writeln(DateTimeToStr(Now) + '[UNAUTHORIZED] O Token informado na Requisição não está liberado');
+                        Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', 'O Token informado na Requisição não está liberado')).Status(401);
+                     end;
+                  end;
+               finally
+                  LToken.Free;
+               end;
+            end
+            else
+            begin
+               Writeln(DateTimeToStr(Now) + '[UNAUTHORIZED] O Token informado na Requisição não está liberado');
+               Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', 'O Token informado na Requisição não está liberado')).Status(401);
+            end;
+         finally
+            au.Free;
+         end;
+      finally
+         LKey.Free;
+      end;
+      Writeln(DateTimeToStr(Now) + '****************** FINALIZAÇÃO (END) REQUISIÇÃO (UPDATE/PUT) ******************');
+   except
+      on E: Exception do
+      begin
+         Log('Erro : ' + e.Message, true, true, false);
+         Writeln(DateTimeToStr(Now) + 'Erro: ' + e.Message);
+         Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', e.message)).Status(401);
+      end;
+   end;
+
+   TrimAppMemorySize();
+end;
+
+procedure Delete(Req: THorseRequest; Res: THorseResponse; Next: TProc);
+var
+   au: TClientesModel;
+   LKey: TJWK;
+   LToken: TJWT;
+   id: string;
+begin
+   try
+      Writeln('****************** INICIANDO (START) REQUISIÇÃO (DELETE) ******************');
+
+      LKey := TJWK.Create(author);
+      try
+         au := TClientesModel.Create();
+         try
+            Writeln(DateTimeToStr(Now) + '[WAIT] Validando o TOKEN!');
+            if Req.Headers['Authorization'] <> '' then
+            begin
+               try
+                  LToken := TJOSE.Verify(LKey, StringReplace(Req.Headers['Authorization'], 'Bearer ', '', [rfReplaceAll, rfIgnoreCase]));
+               except
+                  on E: Exception do
+                  begin
+                     Writeln(DateTimeToStr(Now) + '[UNAUTHORIZED] O Token informado na Requisição não está liberado');
+                     Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', 'O Token informado na Requisição não está liberado')).Status(401);
+                     Exit;
+                  end;
+               end;
+               if Assigned(LToken) then
+               begin
+                  if LToken.Verified then
+                  begin
+                     Writeln(DateTimeToStr(Now) + '[SUCESS] O Token informado na Requisição está liberado!');
+
+                     id := Req.Params['id'];
+                     if id <> '' then
+                     begin
+                        try
+                           Writeln(DateTimeToStr(Now) + '[SUCESS] Deletando recurso para o ID: ' + id);
+                           Res.Send<TJSONObject>(TJSONObject(au.Delete(id))).Status(200);
+                        except
+                           on E: Exception do
+                           begin
+                              Writeln(DateTimeToStr(Now) + '[ERROR] Retornando Dados com Status 500');
+                              Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', 'Erro ao deletar recurso: ' + e.Message)).Status(500);
+                           end;
+                        end;
+                     end
+                     else
+                     begin
+                        Writeln(DateTimeToStr(Now) + '[ERROR] ID não fornecido na requisição!');
+                        Writeln(DateTimeToStr(Now) + '[ERROR] Retornando Dados com Status 400');
+                        Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', 'ID não fornecido na requisição')).Status(400);
+                     end;
+                  end
+                  else
+                  begin
+                     Writeln(DateTimeToStr(Now) + '[UNAUTHORIZED] O Token informado na Requisição não está liberado');
+                     Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', 'O Token informado na Requisição não está liberado')).Status(401);
+                  end;
+               end;
+            end
+            else
+            begin
+               Writeln(DateTimeToStr(Now) + '[UNAUTHORIZED] O Token informado na Requisição não está liberado');
+               Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', 'O Token informado na Requisição não está liberado')).Status(401);
+            end;
+         finally
+            au.Free;
+         end;
+      finally
+         LKey.Free;
+      end;
+      Writeln(DateTimeToStr(Now) + '****************** FINALIZAÇÃO (END) REQUISIÇÃO (DELETE) ******************');
+   except
+      on E: Exception do
+      begin
+         Log('Erro : ' + e.Message, true, true, false);
+         Writeln(DateTimeToStr(Now) + 'Erro: ' + e.Message);
+         Res.Send<TJSONObject>(CreatDefaultResult(1, 'error', e.Message)).Status(500);
+      end;
+   end;
+
+   TrimAppMemorySize();
+end;
+
+procedure Registry;
+begin
+   THorse.Get('/api/version/cliente', Get);
+   THorse.Post('/api/version/cliente', Post);
+   THorse.Put('/api/version/cliente/:id', Put);
+   THorse.Delete('/api/version/cliente/:id', Delete);
+end;
+
+end.
+

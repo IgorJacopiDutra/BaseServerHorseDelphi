@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2021/09/26 20:36:11.000.166,=C:\geiewin\cursos\PrimeiroConsole\model\RootUnit.pas</Transaction>
+    <Transaction>2021/09/26 20:36:15.000.254,=C:\geiewin\cursos\PrimeiroConsole\model\uAudaces.pas</Transaction>
+    <Transaction>2021/09/26 20:37:42.000.578,C:\geiewin\cursos\PrimeiroConsole\model\RootUnit.pas=</Transaction>
+    <Transaction>2021/09/26 20:37:59.000.216,=C:\geiewin\cursos\PrimeiroConsole\model\Pkg.Json.DTO.pas</Transaction>
+    <Transaction>2021/09/26 21:25:53.000.113,=C:\geiewin\cursos\PrimeiroConsole\Unit1.pas</Transaction>
+    <Transaction>2021/09/26 21:26:10.000.567,C:\geiewin\cursos\PrimeiroConsole\Unit1.pas=C:\geiewin\cursos\PrimeiroConsole\dao\AudacesDao.pas</Transaction>
+    <Transaction>2021/09/26 21:29:51.000.738,C:\geiewin\cursos\PrimeiroConsole\model\uAudaces.pas=C:\geiewin\cursos\PrimeiroConsole\model\uAudacesModel.pas</Transaction>
+    <Transaction>2021/09/26 21:43:36.000.145,C:\geiewin\cursos\PrimeiroConsole\model\Model.Audaces.pas=</Transaction>
+    <Transaction>2021/09/26 21:47:17.000.097,C:\geiewin\cursos\PrimeiroConsole\model\Model.Funcoes.pas=C:\geiewin\cursos\PrimeiroConsole\model\FuncoesModel.pas</Transaction>
+    <Transaction>2021/09/26 21:48:11.000.500,C:\geiewin\cursos\PrimeiroConsole\dao\AudacesDao.pas=C:\geiewin\cursos\PrimeiroConsole\dao\uAudacesDao.pas</Transaction>
+    <Transaction>2021/09/26 21:48:21.000.156,C:\geiewin\cursos\PrimeiroConsole\model\FuncoesModel.pas=C:\geiewin\cursos\PrimeiroConsole\model\uFuncoesModel.pas</Transaction>
+    <Transaction>2021/09/26 21:50:43.000.214,C:\geiewin\cursos\PrimeiroConsole\controller\Controller.Audaces.pas=C:\geiewin\cursos\PrimeiroConsole\controller\AudacesController.pas</Transaction>
+    <Transaction>2021/09/26 21:50:59.000.565,C:\geiewin\cursos\PrimeiroConsole\controller\Controller.Cliente.pas=C:\geiewin\cursos\PrimeiroConsole\controller\ClienteController.pas</Transaction>
+    <Transaction>2021/09/26 21:54:25.000.321,C:\geiewin\cursos\PrimeiroConsole\model\Model.Cliente.pas=C:\geiewin\cursos\PrimeiroConsole\model\uClienteModel.pas</Transaction>
+    <Transaction>2021/09/26 21:55:14.000.623,C:\geiewin\cursos\PrimeiroConsole\model\Model.Connection.pas=C:\geiewin\cursos\PrimeiroConsole\model\uConnectionModel.pas</Transaction>
+    <Transaction>2021/09/26 22:29:33.000.897,C:\geiewin\cursos\PrimeiroConsole\model\Pkg.Json.DTO.pas=C:\geiewin\cursos\PrimeiroConsole\model\JsonFunctionModel.pas</Transaction>
+    <Transaction>2021/09/26 22:29:57.000.600,C:\geiewin\cursos\PrimeiroConsole\model\JsonFunctionModel.pas=C:\geiewin\cursos\PrimeiroConsole\model\UJsonFunctionModel.pas</Transaction>
+    <Transaction>2021/09/26 22:30:16.000.402,C:\geiewin\cursos\PrimeiroConsole\model\UJsonFunctionModel.pas=C:\geiewin\cursos\PrimeiroConsole\model\bJsonFunctionModel.pas</Transaction>
+    <Transaction>2021/09/26 22:30:19.000.080,C:\geiewin\cursos\PrimeiroConsole\model\bJsonFunctionModel.pas=C:\geiewin\cursos\PrimeiroConsole\model\uJsonFunctionModel.pas</Transaction>
+    <Transaction>2022/07/06 08:57:35.000.758,D:\geiewin\cursos\Horse\PrimeiroConsole\controller\AudacesController.pas=D:\geiewin\cursos\Horse\PrimeiroConsole\controller\uAudacesController.pas</Transaction>
+    <Transaction>2022/07/06 08:57:38.000.580,D:\geiewin\cursos\Horse\PrimeiroConsole\controller\ClienteController.pas=D:\geiewin\cursos\Horse\PrimeiroConsole\controller\uClienteController.pas</Transaction>
+    <Transaction>2023/01/09 11:11:44.000.037,C:\geiewin\SubProjetos\Horse\Consultas\controller\uAudacesController.pas=C:\geiewin\SubProjetos\Horse\Consultas\controller\uConsultasController.pas</Transaction>
+    <Transaction>2023/01/09 11:12:52.000.535,=C:\geiewin\SubProjetos\Horse\Consultas\Unit1.pas</Transaction>
+    <Transaction>2023/01/09 11:13:00.000.000,C:\geiewin\SubProjetos\Horse\Consultas\Unit1.pas=C:\geiewin\SubProjetos\Horse\Consultas\model\uConsultasModel.pas</Transaction>
+    <Transaction>2023/01/09 11:20:24.000.372,=C:\geiewin\SubProjetos\Horse\Consultas\Unit1.pas</Transaction>
+    <Transaction>2023/01/09 11:20:32.000.775,C:\geiewin\SubProjetos\Horse\Consultas\Unit1.pas=C:\geiewin\SubProjetos\Horse\Consultas\dao\uConsultasDao.pas</Transaction>
+    <Transaction>2023/01/09 11:33:15.000.406,C:\geiewin\SubProjetos\Horse\Consultas\model\uAudacesModel.pas=</Transaction>
+    <Transaction>2023/01/09 11:33:19.000.632,C:\geiewin\SubProjetos\Horse\Consultas\dao\uAudacesDao.pas=</Transaction>
+    <Transaction>2023/01/09 11:33:23.000.959,C:\geiewin\SubProjetos\Horse\Consultas\controller\uClienteController.pas=</Transaction>
+    <Transaction>2023/01/09 11:33:27.000.472,C:\geiewin\SubProjetos\Horse\Consultas\model\uClienteModel.pas=</Transaction>
+    <Transaction>2023/01/09 15:12:56.000.610,C:\geiewin\SubProjetos\Horse\Consultas\ServerRESTAudaces.dproj=C:\geiewin\SubProjetos\Horse\Consultas\ServerRESTConsulta.dproj</Transaction>
+    <Transaction>2024/01/22 08:43:33.000.175,C:\geiewin\SubProjetos\Horse\BaseServerHorseDelphi\ServerRESTConsulta.dproj=C:\geiewin\SubProjetos\Horse\BaseServerHorseDelphi\BaseServerHorseDelphi.dproj</Transaction>
+    <Transaction>2024/01/22 08:48:46.000.364,C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\controller\uClientesController.pas=C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\controller\uConsultasController.pas</Transaction>
+    <Transaction>2024/01/22 08:49:02.000.535,C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\model\uClientesModel.pas=C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\model\uConsultasModel.pas</Transaction>
+    <Transaction>2024/01/22 08:49:08.000.934,C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\dao\uClientesDao.pas=C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\dao\uConsultasDao.pas</Transaction>
+    <Transaction>2024/01/22 08:54:00.000.516,C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\model\uToolsModel.pas=C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\model\uFuncoesModel.pas</Transaction>
+    <Transaction>2024/01/22 09:01:21.000.098,=C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\Unit1.pas</Transaction>
+    <Transaction>2024/01/22 09:01:32.000.927,C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\controller\uAuthController.pas=C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\Unit1.pas</Transaction>
+    <Transaction>2024/01/22 09:35:53.000.578,=C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\Unit1.pas</Transaction>
+    <Transaction>2024/01/22 09:36:06.000.960,C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\Unit1.pas=C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\tools\uConst.pas</Transaction>
+    <Transaction>2024/01/22 11:44:08.000.740,=C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\Unit1.pas</Transaction>
+    <Transaction>2024/01/22 11:44:19.000.429,C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\Unit1.pas=C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\tools\uTools.pas</Transaction>
+    <Transaction>2024/01/22 11:45:05.000.124,C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\model\uToolsModel.pas=</Transaction>
+    <Transaction>2024/01/22 11:47:11.000.062,=C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\Unit1.pas</Transaction>
+    <Transaction>2024/01/22 11:47:20.000.483,C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\Unit1.pas=C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\dao\uConnection.pas</Transaction>
+    <Transaction>2024/01/22 11:47:26.000.697,C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\model\uConnectionModel.pas=</Transaction>
+    <Transaction>2024/01/22 11:53:19.000.352,=C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\tools\uSystem.JSONUtil.pas</Transaction>
+    <Transaction>2024/01/22 14:51:18.000.980,=C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\Unit1.pas</Transaction>
+    <Transaction>2024/01/22 14:51:36.000.841,C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\Unit1.pas=C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\model\uAuthModel.pas</Transaction>
+    <Transaction>2024/01/22 15:00:52.000.566,=C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\Unit1.pas</Transaction>
+    <Transaction>2024/01/22 15:01:01.000.053,C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\Unit1.pas=C:\geiewin\SubProjetos\Curso\Git\BaseServerHorseDelphi\BaseServerHorseDelphi\tools\uAuth.pas</Transaction>
+  </Transactions>
+	<ProjectSortOrder AutoSort="0" SortType="0">
+    <File Path="controller"/>
+    <File Path="controller\uClientesController.pas"/>
+    <File Path="controller\uAuthController.pas"/>
+    <File Path="dao"/>
+    <File Path="dao\uClientesDao.pas"/>
+    <File Path="dao\uConnection.pas"/>
+    <File Path="model"/>
+    <File Path="model\uClientesModel.pas"/>
+    <File Path="model\uJsonFunctionModel.pas"/>
+    <File Path="model\uAuthModel.pas"/>
+    <File Path="tools"/>
+    <File Path="tools\uConst.pas"/>
+    <File Path="tools\uTools.pas"/>
+    <File Path="tools\uSystem.JSONUtil.pas"/>
+    <File Path="tools\uAuth.pas"/>
+  </ProjectSortOrder>
+</BorlandProject>

@@ -1,0 +1,70 @@
+program ServerRESTConsulta;
+
+{$APPTYPE CONSOLE}
+{$R *.res}
+
+uses
+  System.IniFiles,
+  Horse,
+  Horse.Jhonson,
+  System.JSON,
+  Horse.Commons,
+  System.SysUtils,
+  JOSE.Core.JWT,
+  JOSE.Core.Builder,
+  FireDAC.Comp.Client,
+  uConnectionModel in 'model\uConnectionModel.pas',
+  uConsultasController in 'controller\uConsultasController.pas',
+  uFuncoesModel in 'model\uFuncoesModel.pas',
+  uJsonFunctionModel in 'model\uJsonFunctionModel.pas',
+  uConsultasModel in 'model\uConsultasModel.pas',
+  uConsultasDao in 'dao\uConsultasDao.pas';
+
+var
+  ini: TIniFile;
+  arq_ini: string;
+  port: Integer;
+  qry: TFDQuery;
+  FFuncoes: TFuncoesModel;
+  FConsultasDao: TConsultasDao;
+begin
+  try
+    arq_ini := GetCurrentDir + '\config\ConfigServer.ini';
+    // Verifica se INI existe...
+    if not FileExists(arq_ini) then
+    begin
+      writeLn('Arquivo INI não encontrado: ' + arq_ini);
+      exit;
+    end;
+
+    FFuncoes := TFuncoesModel.Create;
+    // Instanciar arquivo INI...
+    try
+      ini := TIniFile.Create(arq_ini);
+      port := StrToInt(FFuncoes.decriptDll(ini.ReadString('Server', 'Port', '9000')));
+    finally
+      ini.Free;
+      FFuncoes.Free;
+    end;
+
+    THorse.Use(Jhonson());
+
+    uConsultasController.Registry;
+
+    THorse.Listen(port,
+      procedure(Horse: THorse)
+      begin
+        writeLn('New Century Gestão da Informação');
+        writeLn('Sistema: Sistema de Gestão ERP');
+        writeLn('New Century © 2021. Todos os direitos reservados.');
+      end);
+
+  except
+    on E: Exception do
+    begin
+      writeLn('Erro: ' + E.Message);
+    end;
+  end;
+
+end.
+

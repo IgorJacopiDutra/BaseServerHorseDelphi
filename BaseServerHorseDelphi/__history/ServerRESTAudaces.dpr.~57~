@@ -1,0 +1,68 @@
+program ServerRESTAudaces;
+
+{$APPTYPE CONSOLE}
+{$R *.res}
+
+uses
+  System.IniFiles,
+  Horse,
+  Horse.Jhonson,
+  System.JSON,
+  Horse.Commons,
+  System.SysUtils,
+  JOSE.Core.JWT,
+  JOSE.Core.Builder,
+  FireDAC.Comp.Client,
+  uClienteModel in 'model\uClienteModel.pas',
+  uConnectionModel in 'model\uConnectionModel.pas',
+  ClienteController in 'controller\ClienteController.pas',
+  AudacesController in 'controller\AudacesController.pas',
+  uFuncoesModel in 'model\uFuncoesModel.pas',
+  uAudacesModel in 'model\uAudacesModel.pas',
+  uJsonFunctionModel in 'model\uJsonFunctionModel.pas',
+  uAudacesDao in 'dao\uAudacesDao.pas';
+
+var
+  ini: TIniFile;
+  arq_ini: string;
+  port: Integer;
+
+begin
+  try
+    arq_ini := GetCurrentDir + '\config\ConfigServer.ini';
+    // Verifica se INI existe...
+    if NOT FileExists(arq_ini) then
+    begin
+      writeLn('Arquivo INI não encontrado: ' + arq_ini);
+      exit;
+    end;
+
+    // Instanciar arquivo INI...
+    try
+      ini := TIniFile.Create(arq_ini);
+      port := ini.ReadInteger('Server', 'Port', 9000)
+    finally
+      ini.Free
+    end;
+
+    THorse.Use(Jhonson());
+
+    AudacesController.Registry;
+
+    THorse.Listen(port,
+      procedure(Horse: THorse)
+      begin
+        writeLn('New Century Gestão da Informação');
+        writeLn('Sistema: Sistema de Gestão ERP');
+        writeLn('Terceiro: Audaces');
+        writeLn('New Century © 2021. Todos os direitos reservados.');
+      end);
+
+  except
+    on E: Exception do
+    begin
+      writeLn('Erro: ' + E.Message);
+    end;
+  end;
+
+end.

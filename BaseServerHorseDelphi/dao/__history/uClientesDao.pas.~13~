@@ -1,0 +1,311 @@
+unit uClientesDao;
+
+interface
+
+uses
+   uClientesModel, System.Generics.Collections, FireDAC.Comp.Client,
+   System.SysUtils, Datasnap.DBClient, System.JSON, uConst;
+
+type
+   TClientesDao = class
+   public
+      function Get(id, search, numPagina: string): TObjectList<TClientesModel>; overload;
+      function Insert(AModel: TClientesModel): TJSONValue;
+      function Update(AId: string; AModel: TClientesModel): TJSONValue;
+      function Delete(AId: string): TJSONValue;
+      function GetId(AAutoIncrementar: Integer): Integer;
+   end;
+
+implementation
+
+uses
+   uConnection, uTools, Winapi.Windows;
+
+const
+   tableName = 'CLIENTES';
+{ TClientesDao }
+
+function TClientesDao.Update(AId: string; AModel: TClientesModel): TJSONValue;
+var
+   VQry: TFDQuery;
+   conn: TConnection;
+begin
+   conn := TConnection.Create;
+   if conn.Active then
+   begin
+      VQry := conn.CriarQuery;
+      try
+         with VQry do
+         begin
+            Close;
+            SQL.Clear;
+            SQL.Add('UPDATE ' + tableName);
+
+           { if isValidDateFormat(AModel.DataCadastro, 'yyyy-mm-dd') then
+            begin
+               SQL.Add('set dataCadastro = :dataCadastro');
+               ParamByName('dataCadastro').AsDateTime := uTools.StrToDate(AModel.DataCadastro);
+            end;
+            }
+
+            if AModel.Nome <> '' then
+            begin
+               SQL.Add('set Nome = :Nome');
+               ParamByName('Nome').AsString := AModel.Nome;
+            end;
+
+            if AModel.TpDocto <> '' then
+            begin
+               SQL.Add(', TpDocto = :TpDocto');
+               ParamByName('TpDocto').AsString := AModel.TpDocto;
+            end;
+
+            if AModel.Docto <> '' then
+            begin
+               SQL.Add(', Docto = :Docto');
+               ParamByName('Docto').AsString := AModel.Docto;
+            end;
+
+            if AModel.Telefone <> '' then
+            begin
+               SQL.Add(', Telefone = :Telefone');
+               ParamByName('Telefone').AsString := AModel.Telefone;
+            end;
+
+            SQL.Add('WHERE id = :id');
+            ParamByName('id').AsString := AId;
+
+            try
+               ExecSQL;
+               conn.CommitBase;
+               result := CreatDefaultResult(0, sucess, Format(qtdUpdatedRow, [RowsAffected]));
+            except
+               on E: Exception do
+               begin
+                  result := CreatDefaultResult(1, ERRO, E.message);
+               end;
+            end;
+         end;
+      finally
+         conn.Free;
+         VQry.Free;
+      end;
+   end
+   else
+   begin
+      result := CreatDefaultResult(1, ERRO, conn.GetError);
+   end;
+end;
+
+function TClientesDao.Delete(AId: string): TJSONValue;
+var
+   VQry: TFDQuery;
+   conn: TConnection;
+begin
+   conn := TConnection.Create;
+   if conn.GetActive then
+   begin
+      VQry := conn.CriarQuery;
+      try
+         with VQry do
+         begin
+            Close;
+            SQL.Clear;
+            SQL.Add('DELETE FROM ' + tableName);
+            SQL.Add('WHERE id = :id');
+            ParamByName('id').AsString := AId;
+            try
+               ExecSQL;
+               conn.CommitBase;
+               result := CreatDefaultResult(0, sucess, Format(qtdDeletedRow, [RowsAffected]));
+            except
+               on E: Exception do
+               begin
+                  result := CreatDefaultResult(1, ERRO, E.message);
+               end;
+            end;
+         end;
+      finally
+         conn.Free;
+         VQry.Free;
+      end;
+   end
+   else
+   begin
+      result := CreatDefaultResult(1, ERRO, conn.GetError);
+   end;
+end;
+
+function TClientesDao.GetId(AAutoIncrementar: Integer): Integer;
+var
+   VQry: TFDQuery;
+   conn: TConnection;
+   i: Integer;
+begin
+   if conn.GetActive then
+   begin
+      conn := TConnection.Create;
+      VQry := conn.CriarQuery;
+      try
+         VQry.Open('select gen_id(GEN_ClientesS, ' + IntToStr(AAutoIncrementar) + ' ) from rdb$database');
+      finally
+         conn.Free;
+         VQry.Free;
+      end;
+   end;
+end;
+
+function TClientesDao.Insert(AModel: TClientesModel): TJSONValue;
+var
+   VQry: TFDQuery;
+   conn: TConnection;
+   attempt: Integer;
+begin
+   conn := TConnection.Create;
+   attempt := 0;
+   if conn.GetActive then
+   begin
+      VQry := conn.CriarQuery;
+      try
+         while attempt < 3 do
+         begin
+            with VQry do
+            begin
+               Close;
+               SQL.Clear;
+               SQL.Add('INSERT INTO ' + tableName);
+               SQL.Add('(id, Nome, TpDocto, Docto, Telefone)');
+               SQL.Add('values');
+               SQL.Add('(:id, :Nome, :TpDocto, :Docto, :Telefone)');
+
+               ParamByName('id').AsInteger := GetId(1);
+               ParamByName('Nome').AsString := AModel.Nome;
+               ParamByName('TpDocto').AsString := AModel.TpDocto;
+               ParamByName('Docto').AsString := AModel.Docto;
+               ParamByName('Telefone').AsString := AModel.Telefone;
+
+               {
+               if isValidDateFormat(AModel.DataCadastro, 'yyyy-mm-dd') then
+                  ParamByName('dataCadastro').AsDateTime := uTools.StrToDate(AModel.DataCadastro);
+               }
+
+               try
+                  VQry.ExecSQL;
+                  conn.CommitBase;
+                  result := CreatDefaultResult(0, sucess, 'ID ' + ParamByName('id').AsString);
+                  break;
+               except
+                  on E: Exception do
+                  begin
+                     result := CreatDefaultResult(1, ERRO, E.message);
+                     inc(attempt);
+                  end;
+               end;
+            end;
+         end;
+      finally
+         conn.Free;
+         VQry.Free;
+      end;
+   end
+   else
+   begin
+      result := CreatDefaultResult(1, ERRO, conn.GetError);
+   end;
+end;
+
+function TClientesDao.Get(id, search, numPagina: string): TObjectList<TClientesModel>;
+var
+   VQry: TFDQuery;
+   VLista: TObjectList<TClientesModel>;
+   VClientes: TClientesModel;
+   conn: TConnection;
+begin
+   conn := TConnection.Create;
+   VLista := TObjectList<TClientesModel>.Create;
+   if conn.GetActive then
+   begin
+      VQry := conn.CriarQuery;
+
+      if numPagina = '' then
+         numPagina := '0';
+
+      try
+         with VQry do
+         begin
+            Close;
+            SQL.Clear;
+            if conn.GetDriver = 'ORA' then
+            begin
+               SQL.Add('SELECT * FROM( ');
+            end;
+            SQL.Add('SELECT ');
+            if conn.GetDriver = 'FB' then
+            begin
+               SQL.Add(' first 50 skip ' + numPagina);
+            end
+            else if conn.GetDriver = 'ORA' then
+            begin
+               SQL.Add(' ROW_NUMBER() OVER (ORDER BY ID) Row_Num,');
+            end;
+
+            SQL.Add('id, nome, tpdocto, docto, telefone');
+            SQL.Add('FROM ' + tableName);
+
+            SQL.Add('WHERE 1 = 1');
+
+            if id <> '' then
+               SQL.Add('AND ID = ' + QuotedStr(id));
+
+            if search <> '' then
+            begin
+               SQL.Add('OR id like ''' + '%' + search + '%' + '''');
+               SQL.Add('OR nome like ''' + '%' + search + '%' + '''');
+               SQL.Add('OR docto like ''' + '%' + search + '%' + '''');
+               SQL.Add('OR tpdocto like ''' + '%' + search + '%' + '''');
+               SQL.Add('OR telefone like ''' + '%' + search + '%' + '''');
+            end;
+
+            SQL.Add('ORDER BY nome');
+
+            if conn.GetDriver = 'ORA' then
+            begin
+               SQL.Add(') WHERE Row_Num BETWEEN ' + numPagina + ' and ' + IntToStr(StrToInt(numPagina) + 50));
+            end;
+
+            try
+               Open;
+            except
+               on E: Exception do
+                  Writeln(Pchar(e.Message));
+            end;
+
+            if RecordCount > 0 then
+            begin
+               First;
+               while not Eof do
+               begin
+                  VClientes := TClientesModel.Create;
+                  VClientes.id := FieldByName('id').AsInteger;
+                  VClientes.Nome := FieldByName('Nome').AsString;
+                  VClientes.TpDocto := FieldByName('TpDocto').AsString;
+                  VClientes.Docto := FieldByName('Docto').AsString;
+                  VClientes.Telefone := FieldByName('Telefone').AsString;
+
+                  VLista.Add(VClientes);
+                  Next;
+               end;
+            end;
+         end;
+      finally
+         if Assigned(conn) then
+            conn.Free;
+         if Assigned(VQry) then
+            VQry.Free;
+      end;
+   end;
+   Result := VLista;
+end;
+
+end.
+
